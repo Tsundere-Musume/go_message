@@ -13,6 +13,9 @@ func (app *application) routes() http.Handler {
 		app.notFound(w)
 	})
 
+	fileServer := http.FileServer(http.Dir("./ui/static"))
+	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer))
+
 	dynamic := alice.New(app.sessionManager.LoadAndSave, noSurf, app.authenticate)
 	dynamic.ThenFunc(app.home)
 	router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
@@ -24,7 +27,9 @@ func (app *application) routes() http.Handler {
 	protected := dynamic.Append(app.requireAuthentication)
 	// TODO: change it to post
 	router.Handler(http.MethodGet, "/user/logout", protected.ThenFunc(app.userLogOutPost))
-
+	router.Handler(http.MethodGet, "/chat", protected.ThenFunc(app.getChatPage))
+	router.Handler(http.MethodGet, "/subscribe", protected.ThenFunc(app.subscriberHandler))
+	router.Handler(http.MethodPost, "/publish", protected.ThenFunc(app.publishMessage))
 	base := alice.New(app.logRequest, secureHeaders)
 	return base.Then(router)
 }

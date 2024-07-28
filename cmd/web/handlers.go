@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"net/http"
 
 	"github.com/Tsundere-Musume/message/internal/models"
 	"github.com/Tsundere-Musume/message/internal/validator"
+	"nhooyr.io/websocket"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -112,4 +114,79 @@ func (app *application) userLogOutPost(w http.ResponseWriter, r *http.Request) {
 	}
 	app.sessionManager.Remove(r.Context(), "authenticatedUserID")
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func (app *application) getChatPage(w http.ResponseWriter, r *http.Request) {
+	userId := app.sessionManager.GetString(r.Context(), "authenticatedUserID")
+	user, err := app.users.Get(userId)
+
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+		} else {
+			app.serverErrror(w, err)
+		}
+		return
+	}
+	data := app.newTemplateData(r)
+	data.User = user
+	app.render(w, http.StatusOK, "message.html", data)
+}
+
+func (app *application) subscriberHandler(w http.ResponseWriter, r *http.Request) {
+	err := app.chat.subscribe(r.Context(), w, r)
+	if errors.Is(err, context.Canceled) {
+		return
+	}
+
+	if websocket.CloseStatus(err) == websocket.StatusNormalClosure || websocket.CloseStatus(err) == websocket.StatusGoingAway {
+		return
+	}
+
+	if err != nil {
+		//TODO: change the webpage somehow
+		app.errorLog.Println(err)
+		return
+	}
+}
+
+func (app *application) publishMessage(w http.ResponseWriter, r *http.Request) {
+	// body := http.MaxBytesReader(w, r.Body, 8192)
+	// fmt.Println(r.Body)
+	// msg_content, err := io.ReadAll(body)
+	// if err != nil {
+	// 	app.clientError(w, http.StatusRequestEntityTooLarge)
+	// 	return
+	// }
+
+	//TODO:
+	// maybe add the data into the body instead of a form
+	// check the cost of processing body vs form requests
+
+	var form MessageForm
+	err := app.decodePostForm(r, &form)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	userId := app.sessionManager.GetString(r.Context(), "authenticatedUserID")
+	user, err := app.users.Get(userId)
+
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+		} else {
+			app.serverErrror(w, err)
+		}
+		return
+	}
+
+	msg := message{
+		UserID:   userId,
+		Username: user.Name,
+		Value:    form.Message,
+	}
+	app.chat.publish(msg)
+	w.WriteHeader(http.StatusAccepted)
 }

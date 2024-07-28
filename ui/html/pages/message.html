@@ -1,0 +1,15 @@
+{{define "title"}}Chat{{end}}
+{{define "main"}}
+<h2> Signed in as {{.User.Name}} </h2>
+<div id="root">
+	<div id="message-log"></div>
+	<div id="publish-form-container">
+		<form id="publish-form">
+			<input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
+			<input name="message" id="message-input" type="text" />
+			<input value="Submit" type="submit" />
+		</form>
+	</div>
+</div>
+<script type="text/javascript" src="/static/js/message.js"></script>
+{{end}}

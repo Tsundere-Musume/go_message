@@ -14,3 +14,8 @@ type LogInForm struct {
 	Password            string `form:"password"`
 	validator.Validator `form:"-"`
 }
+
+type MessageForm struct {
+	Message   string `form:"message"`
+	CSRFToken string `form:"csrf_token"`
+}

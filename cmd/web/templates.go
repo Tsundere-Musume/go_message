@@ -3,11 +3,14 @@ package main
 import (
 	"html/template"
 	"path/filepath"
+
+	"github.com/Tsundere-Musume/message/internal/models"
 )
 
 type templateData struct {
 	Form      any
 	UserID    string
+	User      *models.User
 	CSRFToken string
 }
 

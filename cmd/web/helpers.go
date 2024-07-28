@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -67,4 +68,22 @@ func (app *application) isAuthenticated(r *http.Request) bool {
 		return false
 	}
 	return isAuthenticated
+}
+
+func serializeMessage(msg message) ([]byte, error) {
+	val, err := json.Marshal(msg)
+	if err != nil {
+		// do something with this error
+		return []byte{}, nil
+	}
+	return val, nil
+}
+
+func deserializeMessage(b []byte) (message, error) {
+	var msg message
+	err := json.Unmarshal(b, &msg)
+	if err != nil {
+		return msg, err
+	}
+	return msg, nil
 }

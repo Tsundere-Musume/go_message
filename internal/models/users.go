@@ -12,7 +12,7 @@ import (
 
 type User struct {
 	ID             int
-	String         string
+	Name           string
 	Email          string
 	HashedPassword string
 	CreatedAt      time.Time
@@ -73,4 +73,17 @@ func (m *UserModel) Exists(id string) (bool, error) {
 	err := m.DB.QueryRow(stmt, id).Scan(&exists)
 	return exists, err
 
+}
+
+func (m *UserModel) Get(id string) (*User, error) {
+	var user User
+	stmt := "SELECT name, email, created FROM users WHERE id = $1"
+	err := m.DB.QueryRow(stmt, id).Scan(&user.Name, &user.Email, &user.CreatedAt)
+	if err != nil {
+		if strings.Contains(err.Error(), "no rows in result set") {
+			return nil, ErrNoRecord
+		}
+		return nil, err
+	}
+	return &user, nil
 }

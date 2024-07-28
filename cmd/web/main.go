@@ -22,6 +22,7 @@ type application struct {
 	formDecoder    *form.Decoder
 	users          *models.UserModel
 	sessionManager *scs.SessionManager
+	chat           *chatRoom
 }
 
 func main() {
@@ -53,6 +54,7 @@ func main() {
 		users:          &models.UserModel{DB: db},
 		formDecoder:    form.NewDecoder(),
 		sessionManager: sessionManager,
+		chat:           newChatServer(),
 	}
 
 	// TODO: add https
