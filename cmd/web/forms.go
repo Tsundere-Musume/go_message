@@ -1,6 +1,8 @@
 package main
 
-import "github.com/Tsundere-Musume/message/internal/validator"
+import (
+	"github.com/Tsundere-Musume/message/internal/validator"
+)
 
 type SignUpForm struct {
 	Name                string `form:"name"`
@@ -15,7 +17,11 @@ type LogInForm struct {
 	validator.Validator `form:"-"`
 }
 
-type MessageForm struct {
-	Message   string `form:"message"`
-	CSRFToken string `form:"csrf_token"`
+type DirectMessageForm struct {
+	Message    string `form:"message"`
+	SenderID   string `form:"senderId"`
+	ReceiverID string `form:"receiverId"`
+	CSRFToken  string `form:"csrf_token"`
+	Timezone   string `form:"timezone"`
+	//TODO: maybe validation to check if the sender can send direct methods to the receiver
 }

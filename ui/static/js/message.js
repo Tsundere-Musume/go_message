@@ -2,9 +2,11 @@
   // expectingMessage is set to true
   // if the user has just submitted a message
   // and so we should scroll the next message into view when received.
-  let expectingMessage = false;
   function dial() {
-    const conn = new WebSocket(`ws://${location.host}/subscribe`);
+    const recId = location.pathname.split("/");
+    const conn = new WebSocket(
+      `ws://${location.host}/subscribe/${recId[recId.length - 1]}`,
+    );
 
     conn.addEventListener("close", (ev) => {
       appendLog(
@@ -28,11 +30,9 @@
       }
       const m = JSON.parse(ev.data);
       console.log(m);
-      const p = appendLog(m.value);
-      if (expectingMessage) {
-        p.scrollIntoView();
-        expectingMessage = false;
-      }
+      const p = appendLog(m.body);
+      p.scrollIntoView();
+      p.scrollTop = p.scrollHeight;
     });
   }
   dial();
@@ -40,6 +40,7 @@
   const messageLog = document.getElementById("message-log");
   const publishForm = document.getElementById("publish-form");
   const messageInput = document.getElementById("message-input");
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   // appendLog appends the passed text to messageLog.
   function appendLog(text, error) {
@@ -53,7 +54,6 @@
     messageLog.append(p);
     return p;
   }
-  appendLog("Submit a message to get started!");
 
   // onsubmit publishes the message from the user when the form is submitted.
   publishForm.onsubmit = async (ev) => {
@@ -70,6 +70,9 @@
     const csrfToken = document.querySelector("[name=csrf_token]").value;
     formData.append("message", msg);
     formData.append("csrf_token", csrfToken);
+    formData.append("senderId", window.location.pathname.split("/")[2]);
+    formData.append("receiverId", window.location.pathname.split("/")[2]);
+    formData.append("timezone", timeZone);
     try {
       const resp = await fetch("/publish", {
         method: "POST",

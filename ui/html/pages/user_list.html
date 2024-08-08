@@ -1,0 +1,9 @@
+{{define "title"}}Direct Message{{end}}
+{{define "main"}}
+<h2> Signed in as {{.User.Name}} </h2>
+{{if .Users}}
+{{range .Users}}
+<a href='/message/{{.ID}}'>{{.Name}}</a>
+{{end}}
+{{end}}
+{{end}}

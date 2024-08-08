@@ -1,8 +1,11 @@
 {{define "title"}}Chat{{end}}
 {{define "main"}}
-<h2> Signed in as {{.User.Name}} </h2>
 <div id="root">
-	<div id="message-log"></div>
+	<div id="message-log">
+		{{range .Messages}}
+		<p> {{.Body}}</p>
+		{{end}}
+	</div>
 	<div id="publish-form-container">
 		<form id="publish-form">
 			<input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
@@ -11,5 +14,8 @@
 		</form>
 	</div>
 </div>
+<script>
+	let userID = "{{.UserID}}"
+</script>
 <script type="text/javascript" src="/static/js/message.js"></script>
 {{end}}

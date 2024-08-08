@@ -21,8 +21,10 @@ type application struct {
 	templates      map[string]*template.Template
 	formDecoder    *form.Decoder
 	users          *models.UserModel
+	directMessages *models.DirectMessageModel
 	sessionManager *scs.SessionManager
-	chat           *chatRoom
+	// chat                *chatRoom
+	directMessageServer *directMsgServer
 }
 
 func main() {
@@ -54,7 +56,9 @@ func main() {
 		users:          &models.UserModel{DB: db},
 		formDecoder:    form.NewDecoder(),
 		sessionManager: sessionManager,
-		chat:           newChatServer(),
+		// chat:                newChatServer(),
+		directMessages:      &models.DirectMessageModel{DB: db},
+		directMessageServer: serverDM(),
 	}
 
 	// TODO: add https
@@ -74,12 +78,9 @@ func main() {
 	infoLog.Printf("Started server on %v", addr)
 
 	// TODO: add graceful shutdown
-	select {
-	case err := <-errCh:
-		errLog.Fatalf("Error while running the server: %s", err)
-	}
+	err = <-errCh
+	errLog.Fatalf("Error while running the server: %s", err)
 }
-
 func openDB(dsn string) (*sql.DB, error) {
 	conn, err := sql.Open("postgres", dsn)
 	if err != nil {
@@ -94,6 +95,11 @@ func openDB(dsn string) (*sql.DB, error) {
 	}
 
 	err = models.InitSession(conn)
+	if err != nil {
+		return nil, err
+	}
+
+	err = models.InitDirectMessage(conn)
 	if err != nil {
 		return nil, err
 	}

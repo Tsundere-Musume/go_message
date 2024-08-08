@@ -11,7 +11,7 @@ import (
 )
 
 type User struct {
-	ID             int
+	ID             uuid.UUID
 	Name           string
 	Email          string
 	HashedPassword string
@@ -86,4 +86,29 @@ func (m *UserModel) Get(id string) (*User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (m *UserModel) GetAllUsers(id string) ([]*User, error) {
+	//TODO: maybe remove the email probably should remove better to remove
+	stmt := "SELECT id, name, email, created FROM users WHERE id != $1"
+	rows, err := m.DB.Query(stmt, id)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+	users := []*User{}
+
+	for rows.Next() {
+		user := &User{}
+		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return users, nil
 }

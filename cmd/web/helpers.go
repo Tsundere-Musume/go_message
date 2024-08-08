@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -26,7 +25,7 @@ func (app *application) notFound(w http.ResponseWriter) {
 func (app *application) render(w http.ResponseWriter, status int, page string, data *templateData) {
 	tmpl, ok := app.templates[page]
 	if !ok {
-		err := fmt.Errorf("Template %s does not exist", page)
+		err := fmt.Errorf("template %s does not exist", page)
 		app.serverErrror(w, err)
 		return
 	}
@@ -41,8 +40,9 @@ func (app *application) render(w http.ResponseWriter, status int, page string, d
 func (app *application) newTemplateData(r *http.Request) *templateData {
 	userID := app.sessionManager.GetString(r.Context(), "authenticatedUserID")
 	return &templateData{
-		UserID:    userID,
-		CSRFToken: nosurf.Token(r),
+		UserID:          userID,
+		CSRFToken:       nosurf.Token(r),
+		IsAuthenticated: app.isAuthenticated(r),
 	}
 }
 
@@ -70,20 +70,21 @@ func (app *application) isAuthenticated(r *http.Request) bool {
 	return isAuthenticated
 }
 
-func serializeMessage(msg message) ([]byte, error) {
-	val, err := json.Marshal(msg)
-	if err != nil {
-		// do something with this error
-		return []byte{}, nil
-	}
-	return val, nil
-}
-
-func deserializeMessage(b []byte) (message, error) {
-	var msg message
-	err := json.Unmarshal(b, &msg)
-	if err != nil {
-		return msg, err
-	}
-	return msg, nil
-}
+// func serializeMessage(msg message) ([]byte, error) {
+// 	val, err := json.Marshal(msg)
+// 	if err != nil {
+// 		// do something with this error
+// 		return []byte{}, nil
+// 	}
+// 	return val, nil
+// }
+//
+// // NOTE:  Currently not used
+// func deserializeMessage(b []byte) (message, error) {
+// 	var msg message
+// 	err := json.Unmarshal(b, &msg)
+// 	if err != nil {
+// 		return msg, err
+// 	}
+// 	return msg, nil
+// }

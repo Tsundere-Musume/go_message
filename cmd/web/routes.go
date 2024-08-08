@@ -25,11 +25,11 @@ func (app *application) routes() http.Handler {
 	router.Handler(http.MethodPost, "/user/login", dynamic.ThenFunc(app.userLogInPost))
 
 	protected := dynamic.Append(app.requireAuthentication)
-	// TODO: change it to post
-	router.Handler(http.MethodGet, "/user/logout", protected.ThenFunc(app.userLogOutPost))
-	router.Handler(http.MethodGet, "/chat", protected.ThenFunc(app.getChatPage))
-	router.Handler(http.MethodGet, "/subscribe", protected.ThenFunc(app.subscriberHandler))
-	router.Handler(http.MethodPost, "/publish", protected.ThenFunc(app.publishMessage))
+	router.Handler(http.MethodGet, "/message/:id", protected.ThenFunc(app.directMessage))
+	router.Handler(http.MethodPost, "/user/logout", protected.ThenFunc(app.userLogOutPost))
+	router.Handler(http.MethodGet, "/chat", protected.ThenFunc(app.userList))
+	router.Handler(http.MethodGet, "/subscribe/:id", protected.ThenFunc(app.subscriberHandler))
+	router.Handler(http.MethodPost, "/publish", protected.ThenFunc(app.directMessagePost))
 	base := alice.New(app.logRequest, secureHeaders)
 	return base.Then(router)
 }

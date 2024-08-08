@@ -29,3 +29,15 @@ func InitSession(db *sql.DB) error {
 	_, err := db.Exec(stmt)
 	return err
 }
+
+func InitDirectMessage(db *sql.DB) error {
+	stmt := `
+	CREATE TABLE IF NOT EXISTS direct_message (
+	from_id UUID REFERENCES users(id) ON DELETE CASCADE,
+	to_id UUID REFERENCES users(id) ON DELETE CASCADE,
+	body TEXT NOT NULL,
+	created TIMESTAMP NOT NULL
+	);`
+	_, err := db.Exec(stmt)
+	return err
+}
