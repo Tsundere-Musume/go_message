@@ -20,7 +20,7 @@ type DirectMessageModel struct {
 }
 
 func (m *DirectMessageModel) GetMessagesForUser(currentUserId, userId string) ([]*DirectMessage, error) {
-	stmt := "SELECT body, created FROM direct_message WHERE from_id = $1 AND to_id = $2;"
+	stmt := "SELECT body, created FROM direct_message WHERE (from_id = $1 AND to_id = $2) OR (from_id = $2 AND to_id = $1);"
 	rows, err := m.DB.Query(stmt, currentUserId, userId)
 	if err != nil {
 		return nil, err
