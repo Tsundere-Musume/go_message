@@ -56,7 +56,7 @@
 
     const username = document.createElement("span")
     username.className = "font-semibold text-love"
-    username.innerText = "Elvis"
+    username.innerText = m.sender
 
     usernameContainer.append(username)
 

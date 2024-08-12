@@ -211,16 +211,27 @@ func (app *application) directMessagePost(w http.ResponseWriter, r *http.Request
 	}
 
 	senderId := app.sessionManager.GetString(r.Context(), "authenticatedUserID")
+	user, err := app.users.Get(senderId)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+		} else {
+			app.serverErrror(w, err)
+		}
+		return
+	}
 	err = app.directMessages.Send(senderId, form.ReceiverID, form.Message)
 	if err != nil {
 		app.serverErrror(w, err)
 		return
 	}
+
 	msg := models.DirectMessage{
 		FromId:  senderId,
 		ToId:    form.ReceiverID,
 		Body:    form.Message,
 		Created: time.Now().UTC(),
+		Sender:  user.Name,
 	}
 	//validate user id
 	room, ok := app.directMessageServer.getRoomByIds(msg.FromId, msg.ToId)
