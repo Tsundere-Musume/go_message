@@ -1,22 +1,39 @@
 {{define "nav"}}
-<nav>
-  <div>
-    <a href="/">Home</a>
-    <a href="/about">About</a>
-    <a href="/chat">Let's chat</a>
-  </div>
-  <div>
-    {{if .IsAuthenticated}}
-    <a href="/account/view">Account </a>
-    <form action="/user/logout" method="POST">
-      <!-- Include the CSRF token -->
-      <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
-      <button>Logout</button>
-    </form>
-    {{else}}
-    <a href="/user/signup">Signup</a>
-    <a href="/user/login">Login</a>
-    {{end}}
+<nav class="mb-2 md:mt-2 border-muted border-b-[3px]">
+  <div class="flex flex-row justify-between md:p-3">
+    <div class="flex">
+      <a
+        href="/"
+        class="nav-trans font-bold bg-love p-2 pt-1 text-base mr-2 hover:bg-rose"
+        >Message</a
+      >
+      <a href="/chat" class="nav-item">Let's chat</a>
+    </div>
+    <div class="flex">
+      {{if .IsAuthenticated}}
+      <a href="/account/view">Account </a>
+      <form action="/user/logout" method="POST">
+        <!-- Include the CSRF token -->
+        <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
+        <button>Logout</button>
+      </form>
+      {{else}}
+      <div
+        class="bg-gold flex text-base shadow-md shadow-highlight-high md:rounded-xl"
+      >
+        <a
+          href="/user/signup"
+          class="px-2.5 py-1.5 border-highlight-high border-r-[2px] hover:bg-rose md:rounded-l-xl"
+          >Signup</a
+        >
+        <a
+          href="/user/login"
+          class="px-2.5 py-1.5 hover:bg-rose md:rounded-r-xl"
+          >Login</a
+        >
+      </div>
+      {{end}}
+    </div>
   </div>
 </nav>
 {{end}}

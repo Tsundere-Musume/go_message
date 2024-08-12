@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer components {
+  .nav-item {
+    @apply px-2.5 py-1.5 hover:bg-muted hover:bg-opacity-10 rounded-md
+  }
+
+
+  .nav-trans {
+    @apply transition duration-300 ease-in-out transform hover:scale-105
+  }
+
+  .form-field {
+    @apply px-4 py-3 m-2 rounded-3xl focus:border-iris focus:border-opacity-10 w-full
+  }
+
+}
+
+
+@layer base {
+  h1 {
+    @apply text-4xl font-bold
+  }
+}

@@ -1,21 +1,42 @@
-{{define "title"}}Chat{{end}}
-{{define "main"}}
-<div id="root">
-	<div id="message-log">
-		{{range .Messages}}
-		<p> {{.Body}}</p>
-		{{end}}
-	</div>
-	<div id="publish-form-container">
-		<form id="publish-form">
-			<input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
-			<input name="message" id="message-input" type="text" />
-			<input value="Submit" type="submit" />
-		</form>
-	</div>
+{{define "title"}}Chat{{end}} {{define "main"}}
+<div id="root" class="md:w-[50%] mx-auto">
+  <h1 class="mt-5 px-1">Other User</h1>
+  <div id="message-log" class="overflow-auto md:h-[70vh] h-[80vh] p-3 my-2">
+    {{range .Messages}}
+    <div class="flex items-start mb-3 p-3 rounded-lg shadow-md">
+      <div class="w-10 h-10 bg-gray-400 rounded-full flex-shrink-0 mr-3"></div>
+      <div class="flex-1">
+        <div class="flex items-center mb-1">
+          <span class="font-semibold text-love">User123</span>
+          <span class="text-text text-sm ml-2">10:45 AM</span>
+        </div>
+        <p class="text-text">{{.Body}}</p>
+      </div>
+    </div>
+    {{end}}
+  </div>
+  <div id="publish-form-container" class="">
+    <form id="publish-form">
+      <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
+      <div class="flex flex-row gap-1 mx-1">
+        <input
+          name="message"
+          id="message-input"
+          type="text"
+          placeholder="Say something..."
+          class="w-full rounded-xl py-1 px-2 bg-highlight-low my-2"
+        />
+        <input
+          value="&#10148;"
+          class="text-rose text-4xl px-1 cursor-pointer pb-2"
+          type="submit"
+        />
+      </div>
+    </form>
+  </div>
 </div>
 <script>
-	let userID = "{{.UserID}}"
+  let userID = "{{.UserID}}";
 </script>
 <script type="text/javascript" src="/static/js/message.js"></script>
 {{end}}

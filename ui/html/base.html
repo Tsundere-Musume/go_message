@@ -1,29 +1,24 @@
 {{define "base"}}
 <!doctype html>
-<html lang='en'>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{{template "title" .}} - Message</title>
+    <meta name="viewport" content="width=device-width" />
 
-<head>
-	<meta charset='utf-8'>
-	<title>{{template "title" .}} - Message</title>
-	<meta name="viewport" content="width=device-width" />
+    <link href="https://unpkg.com/sanitize.css" rel="stylesheet" />
+    <link
+      href="https://unpkg.com/sanitize.css/typography.css"
+      rel="stylesheet"
+    />
+    <link href="https://unpkg.com/sanitize.css/forms.css" rel="stylesheet" />
+    <link href="/static/css/main.css" rel="stylesheet" />
+  </head>
 
-	<link href="https://unpkg.com/sanitize.css" rel="stylesheet" />
-	<link href="https://unpkg.com/sanitize.css/typography.css" rel="stylesheet" />
-	<link href="https://unpkg.com/sanitize.css/forms.css" rel="stylesheet" />
-	<link href="/static/css/main.css" rel="stylesheet" />
-</head>
-
-<body>
-	<header>
-		<h1><a href='/'>Message</a></h1>
-	</header>
-	{{template "nav" .}}
-	<main>
-		{{template "main" .}}
-	</main>
-	<footer>
-	</footer>
-</body>
-
+  <body class="text-text bg-base w-screen md:w-[90%] mx-auto">
+    {{template "nav" .}}
+    <main class="mx-auto">{{template "main" .}}</main>
+    <footer></footer>
+  </body>
 </html>
 {{end}}

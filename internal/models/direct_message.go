@@ -9,10 +9,11 @@ import (
 type DirectMessage struct {
 	//TODO: maybe add message id or not
 	// messageId uuid.UUID
-	FromId  string    `json:"from_id"`
-	ToId    string    `json:"to_id"`
-	Body    string    `json:"body"`
-	Created time.Time `json:"created"`
+	FromId     string    `json:"from_id"`
+	ToId       string    `json:"to_id"`
+	Body       string    `json:"body"`
+	Created    time.Time `json:"created"`
+	SenderName string    `json:"sender"` // field not stored in db
 }
 
 type DirectMessageModel struct {

@@ -1,7 +1,4 @@
 (() => {
-  // expectingMessage is set to true
-  // if the user has just submitted a message
-  // and so we should scroll the next message into view when received.
   function dial() {
     const recId = location.pathname.split("/");
     const conn = new WebSocket(
@@ -30,7 +27,7 @@
       }
       const m = JSON.parse(ev.data);
       console.log(m);
-      const p = appendLog(m.body);
+      const p = appendLog(m);
       p.scrollIntoView();
       p.scrollTop = p.scrollHeight;
     });
@@ -42,17 +39,53 @@
   const messageInput = document.getElementById("message-input");
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+  function createMessage(m){
+    const msgWrapper = document.createElement("div")
+    msgWrapper.className = "flex items-start mb-4 p-3 rounded-lg shadow-md"
+
+    const profileImage = document.createElement("div")
+    profileImage.className = "w-10 h-10 bg-gray-400 rounded-full flex-shrink-0 mr-3"
+
+    msgWrapper.append(profileImage)
+
+    const msgBody = document.createElement("div")
+    msgBody.className = "flex-1"
+
+    const usernameContainer = document.createElement("div")
+    usernameContainer.className = "flex items-center mb-1"
+
+    const username = document.createElement("span")
+    username.className = "font-semibold text-love"
+    username.innerText = "Elvis"
+
+    usernameContainer.append(username)
+
+    msgBody.append(usernameContainer)
+
+    const msg= document.createElement("p")
+    msg.className = "text-text"
+    msg.innerText = m.body
+    msgBody.append(msg)
+
+    msgWrapper.append(msgBody)
+    return msgWrapper
+  }
+  function scrollToBottom(){
+    messageLog.scrollTop = messageLog.scrollHeight;
+  }
+  window.onload = scrollToBottom
   // appendLog appends the passed text to messageLog.
-  function appendLog(text, error) {
-    const p = document.createElement("p");
+  function appendLog(msg, error) {
+    const m = createMessage(msg)
     // Adding a timestamp to each message makes the log easier to read.
-    p.innerText = `${new Date().toLocaleTimeString()}: ${text}`;
-    if (error) {
-      p.style.color = "red";
-      p.style.fontStyle = "bold";
-    }
-    messageLog.append(p);
-    return p;
+    // p.innerText = `${new Date().toLocaleTimeString()}: ${text}`;
+    // p.innerText = text
+    // if (error) {
+    //   p.style.color = "red";
+    //   p.style.fontStyle = "bold";
+    // }
+    messageLog.append(m);
+    return m;
   }
 
   // onsubmit publishes the message from the user when the form is submitted.

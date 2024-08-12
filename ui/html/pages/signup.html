@@ -1,30 +1,44 @@
-{{define "title"}}Sign Up{{end}}
-{{define "main"}}
-<form method="POST" action="/user/signup" novalidate>
-	<input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
-	<div>
-		<label>Name:</label>
-		{{with .Form.FieldErrors.name}}
-		<label class='error'>{{.}}</label>
-		{{end}}
-		<input type='text' name='name' value='{{.Form.Name}}'>
-	</div>
-	<div>
-		<label>Email:</label>
-		{{with .Form.FieldErrors.email}}
-		<label class='error'>{{.}}</label>
-		{{end}}
-		<input type='email' name='email' value='{{.Form.Email}}'>
-	</div>
-	<div>
-		<label>Password:</label>
-		{{with .Form.FieldErrors.password}}
-		<label class='error'>{{.}}</label>
-		{{end}}
-		<input type='password' name='password'>
-	</div>
-	<div>
-		<input type='submit' value='Sign Up'>
-	</div>
+{{define "title"}}Sign Up{{end}} {{define "main"}}
+<form method="POST" class="mx-auto w-1/3" action="/user/signup" novalidate>
+  <h1 class="mt-5 mb-14 text-center">Register nyow</h1>
+  <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
+  <div>
+    {{with .Form.FieldErrors.name}}
+    <label class="error">{{.}}</label>
+    {{end}}
+    <input
+      type="text"
+      class="form-field"
+      name="name"
+      value="{{.Form.Name}}"
+      placeholder="Name"
+    />
+  </div>
+  <div>
+    {{with .Form.FieldErrors.email}}
+    <label class="error">{{.}}</label>
+    {{end}}
+    <input
+      type="email"
+      name="email"
+      value="{{.Form.Email}}"
+      class="form-field"
+      placeholder="Email"
+    />
+  </div>
+  <div>
+    {{with .Form.FieldErrors.password}}
+    <label class="error">{{.}}</label>
+    {{end}}
+    <input
+      class="form-field"
+      type="password"
+      name="password"
+      placeholder="Password"
+    />
+  </div>
+  <div>
+    <input type="submit" class="form-field bg-foam" value="Sign Up" />
+  </div>
 </form>
 {{end}}
