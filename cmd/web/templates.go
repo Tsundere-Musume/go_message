@@ -16,6 +16,7 @@ type templateData struct {
 	Messages        []*models.DirectMessage // TODO: change it to a more generic message type later or add two separate messages for direct message or group message
 	IsAuthenticated bool
 	CSRFToken       string
+	Heading         string
 }
 
 func chatTime(t time.Time, timezone string) string {

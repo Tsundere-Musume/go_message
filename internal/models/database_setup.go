@@ -11,6 +11,16 @@ func InitUsers(db *sql.DB) error {
 	hashed_password CHAR(60) NOT NULL,
 	created TIMESTAMP NOT NULL
 	);
+
+
+  CREATE TABLE IF NOT EXISTS friends(
+  user_id_1 UUID,
+  user_id_2 UUID,
+  PRIMARY KEY (user_id_1, user_id_2),
+  FOREIGN KEY (user_id_1) REFERENCES USERS(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id_2) REFERENCES USERS(id) ON DELETE CASCADE,
+  CHECK (user_id_1 <> user_id_2)
+  );
 	`
 	_, err := db.Exec(stmt)
 	return err

@@ -30,6 +30,8 @@ func (app *application) routes() http.Handler {
 	router.Handler(http.MethodGet, "/chat", protected.ThenFunc(app.userList))
 	router.Handler(http.MethodGet, "/subscribe/:id", protected.ThenFunc(app.subscriberHandler))
 	router.Handler(http.MethodPost, "/publish", protected.ThenFunc(app.directMessagePost))
+	router.Handler(http.MethodGet, "/user/add/:id", protected.ThenFunc(app.addFriend))
+	router.Handler(http.MethodGet, "/user/remove/:id", protected.ThenFunc(app.removeFriend))
 	base := alice.New(app.logRequest, secureHeaders)
 	return base.Then(router)
 }

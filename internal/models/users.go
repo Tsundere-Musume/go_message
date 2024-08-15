@@ -112,3 +112,32 @@ func (m *UserModel) GetAllUsers(id string) ([]*User, error) {
 	}
 	return users, nil
 }
+
+func (m *UserModel) AddFriend(userId, otherId string) error {
+	stmt := `
+    INSERT INTO FRIENDS (user_id_1, user_id_2)
+    VALUES ($1, $2)
+    ON CONFLICT (user_id_1, user_id_2) DO NOTHING;
+  `
+	var err error
+	if userId < otherId {
+		_, err = m.DB.Exec(stmt, userId, otherId)
+	} else {
+		_, err = m.DB.Exec(stmt, otherId, userId)
+	}
+	return err
+}
+
+func (m *UserModel) RemoveFriend(userId, otherId string) error {
+	stmt := `
+    DELETE FROM FRIENDS 
+    WHERE user_id_1 = $1 AND user_id_2 = $2;
+  `
+	var err error
+	if userId < otherId {
+		_, err = m.DB.Exec(stmt, userId, otherId)
+	} else {
+		_, err = m.DB.Exec(stmt, otherId, userId)
+	}
+	return err
+}

@@ -1,6 +1,6 @@
 {{define "title"}}Chat{{end}} {{define "main"}}
 <div id="root" class="md:w-[50%] mx-auto">
-  <h1 class="mt-5 px-1">Other User</h1>
+  <h1 class="mt-5 px-1">{{.Heading}}</h1>
   <div id="message-log" class="overflow-auto md:h-[70vh] h-[80vh] p-3 my-2">
     {{range .Messages}}
     <div class="flex items-start mb-3 p-3 rounded-lg shadow-md">
