@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/Tsundere-Musume/message/internal/models"
@@ -41,6 +42,8 @@ func (app *application) userSignUpPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	filename, err := app.uploadAvatar(r)
+	fmt.Println(filename)
 	err = app.users.Insert(form.Name, form.Email, form.Password)
 	if err != nil {
 		if errors.Is(err, models.ErrDuplicateEmail) {
@@ -129,6 +132,32 @@ func (app *application) userList(w http.ResponseWriter, r *http.Request) {
 	}
 
 	users, err := app.users.GetAllUsers(userId)
+	if err != nil {
+		app.serverErrror(w, err)
+		return
+	}
+
+	data := app.newTemplateData(r)
+	data.User = user
+	data.Users = users
+
+	app.render(w, http.StatusOK, "user_list.html", data)
+}
+
+func (app *application) friendList(w http.ResponseWriter, r *http.Request) {
+	userId := app.sessionManager.GetString(r.Context(), "authenticatedUserID")
+	user, err := app.users.Get(userId)
+
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+		} else {
+			app.serverErrror(w, err)
+		}
+		return
+	}
+
+	users, err := app.users.GetFriends(userId)
 	if err != nil {
 		app.serverErrror(w, err)
 		return

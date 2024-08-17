@@ -19,7 +19,7 @@ func InitUsers(db *sql.DB) error {
   PRIMARY KEY (user_id_1, user_id_2),
   FOREIGN KEY (user_id_1) REFERENCES USERS(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id_2) REFERENCES USERS(id) ON DELETE CASCADE,
-  CHECK (user_id_1 <> user_id_2)
+  CHECK (user_id_1 < user_id_2)
   );
 	`
 	_, err := db.Exec(stmt)

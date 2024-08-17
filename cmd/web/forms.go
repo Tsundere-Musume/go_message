@@ -8,6 +8,7 @@ type SignUpForm struct {
 	Name                string `form:"name"`
 	Email               string `form:"email"`
 	Password            string `form:"password"`
+	Avatar              []byte `form:"avatar"`
 	validator.Validator `form:"-"`
 }
 

@@ -113,6 +113,38 @@ func (m *UserModel) GetAllUsers(id string) ([]*User, error) {
 	return users, nil
 }
 
+func (m *UserModel) GetFriends(id string) ([]*User, error) {
+	//TODO: maybe remove the email probably should remove better to remove
+	stmt := `
+    SELECT u.id, u.name
+    FROM 
+        friends f
+    JOIN 
+        Users u ON (u.id = f.user_id_1 AND f.user_id_2 = $1)
+              OR (u.id = f.user_id_2 AND f.user_id_1 = $1);
+  `
+	rows, err := m.DB.Query(stmt, id)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+	users := []*User{}
+
+	for rows.Next() {
+		user := &User{}
+		err := rows.Scan(&user.ID, &user.Name)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
 func (m *UserModel) AddFriend(userId, otherId string) error {
 	stmt := `
     INSERT INTO FRIENDS (user_id_1, user_id_2)

@@ -1,9 +1,20 @@
-{{define "title"}}Direct Message{{end}}
-{{define "main"}}
-<h2> Signed in as {{.User.Name}} </h2>
+{{define "title"}}Direct Message{{end}} {{define "main"}}
+
+<h1 class="mt-5 px-1">Messages for {{.User.Name}}</h1>
 {{if .Users}}
-{{range .Users}}
-<a href='/message/{{.ID}}'>{{.Name}}</a>
-{{end}}
-{{end}}
+<div class="w-[50%] py-5 my-5">
+  {{range .Users}}
+  <a href="/message/{{.ID}}">
+    <div class="flex items-start mb-3 p-3 rounded-lg shadow-md hover:bg-muted trans ease-in-out duration-100">
+      <div class="w-10 h-10 bg-gray-400 rounded-full flex-shrink-0 mr-3"></div>
+      <div class="flex-1">
+        <div class="flex items-center mb-1">
+          <span class="font-semibold text-love">{{.Name}}</span>
+        </div>
+        <p class="text-text">Latest message placeholder.</p>
+      </div>
+    </div>
+  </a>
+  {{end}} {{end}}
+</div>
 {{end}}

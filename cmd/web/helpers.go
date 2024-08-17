@@ -3,9 +3,13 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/go-playground/form/v4"
+	"github.com/google/uuid"
 	"github.com/justinas/nosurf"
 )
 
@@ -88,3 +92,36 @@ func (app *application) isAuthenticated(r *http.Request) bool {
 // 	}
 // 	return msg, nil
 // }
+
+func (app *application) uploadAvatar(r *http.Request) (string, error) {
+	err := r.ParseMultipartForm(10 << 20) //TODO: CHANGE THE UPLOAD SIZE
+	if err != nil {
+		return "", err
+	}
+
+	file, fileHeaders, err := r.FormFile("avatar")
+	if err != nil {
+		return "", err
+	}
+
+	defer file.Close()
+
+	fileExt := filepath.Ext(fileHeaders.Filename)
+	filename := uuid.NewString() + fileExt
+	outFile, err := os.Create("./ui/static/images/" + filename)
+	if err != nil {
+		return "", err
+	}
+	defer outFile.Close()
+
+	_, err = io.Copy(outFile, file)
+	if err != nil {
+		return "", err
+	}
+	return fileExt, nil
+}
+
+func generateFileName(filename string) string {
+	ext := filepath.Ext(filename)
+	return uuid.NewString() + ext
+}

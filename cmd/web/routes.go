@@ -24,10 +24,11 @@ func (app *application) routes() http.Handler {
 	router.Handler(http.MethodGet, "/user/login", dynamic.ThenFunc(app.userLogIn))
 	router.Handler(http.MethodPost, "/user/login", dynamic.ThenFunc(app.userLogInPost))
 
+
 	protected := dynamic.Append(app.requireAuthentication)
 	router.Handler(http.MethodGet, "/message/:id", protected.ThenFunc(app.directMessage))
 	router.Handler(http.MethodPost, "/user/logout", protected.ThenFunc(app.userLogOutPost))
-	router.Handler(http.MethodGet, "/chat", protected.ThenFunc(app.userList))
+	router.Handler(http.MethodGet, "/chat", protected.ThenFunc(app.friendList))
 	router.Handler(http.MethodGet, "/subscribe/:id", protected.ThenFunc(app.subscriberHandler))
 	router.Handler(http.MethodPost, "/publish", protected.ThenFunc(app.directMessagePost))
 	router.Handler(http.MethodGet, "/user/add/:id", protected.ThenFunc(app.addFriend))

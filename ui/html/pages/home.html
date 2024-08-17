@@ -1,5 +1,10 @@
 {{define "title"}}Home{{end}} {{define "main"}}
 <h2>Home Page</h2>
+<form action="/upload" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
+  <input type="file" , name="avatar" accept="image/png, image/jpeg" required />
+  <button type="submit">Upload</button>
+</form>
 <p>Wow this is the home page.</p>
 <p>I have no clue what to add in the home page.</p>
 <p>Mabe make like a feed thing twitter ?? instagaram ???</p>
@@ -17,29 +22,4 @@
   <li></li>
   <li></li>
 </ul>
-
-<div
-  class="max-w-md m-5 mx-auto overflow-hidden bg-white shadow-md rounded-xl md:max-w-2xl"
->
-  <div class="md:flex">
-    <div class="md:flex-shrink-0">
-      <img
-        class="object-cover w-full h-48 md:w-48"
-        src="/img/store.jpg"
-        alt="A cool store"
-      />
-    </div>
-    <div class="p-8">
-      <div
-        class="text-sm font-semibold tracking-wide text-indigo-500 uppercase"
-      >
-        The cool store
-      </div>
-      <p class="mt-2 text-gray-500">
-        Visit our cool store and find the best products for you.
-      </p>
-    </div>
-  </div>
-</div>
-
 {{end}}
