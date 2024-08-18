@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/Tsundere-Musume/message/internal/models"
@@ -43,8 +42,15 @@ func (app *application) userSignUpPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	filename, err := app.uploadAvatar(r)
-	fmt.Println(filename)
-	err = app.users.Insert(form.Name, form.Email, form.Password)
+	if err != nil {
+		if errors.Is(err, models.ErrNoAvatarImg) {
+			filename = "default_img.jpeg"
+		} else {
+			app.clientError(w, http.StatusBadRequest)
+			return
+		}
+	}
+	err = app.users.Insert(form.Name, form.Email, form.Password, filename)
 	if err != nil {
 		if errors.Is(err, models.ErrDuplicateEmail) {
 			form.AddFieldError("email", "Email address is already in use")

@@ -5,8 +5,13 @@
 <div class="w-[50%] py-5 my-5">
   {{range .Users}}
   <a href="/message/{{.ID}}">
-    <div class="flex items-start mb-3 p-3 rounded-lg shadow-md hover:bg-muted trans ease-in-out duration-100">
-      <div class="w-10 h-10 bg-gray-400 rounded-full flex-shrink-0 mr-3"></div>
+    <div
+      class="flex items-start mb-3 p-3 rounded-lg shadow-md hover:bg-muted trans ease-in-out duration-100"
+    >
+      <img
+        class="w-10 h-10 bg-gray-400 rounded-full flex-shrink-0 mr-3 object-cover"
+        src="/static/images/{{.AvatarUrl}}"
+      />
       <div class="flex-1">
         <div class="flex items-center mb-1">
           <span class="font-semibold text-love">{{.Name}}</span>

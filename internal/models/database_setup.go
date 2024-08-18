@@ -9,7 +9,8 @@ func InitUsers(db *sql.DB) error {
 	name VARCHAR(255) NOT NULL,
 	email VARCHAR(255) NOT NULL UNIQUE,
 	hashed_password CHAR(60) NOT NULL,
-	created TIMESTAMP NOT NULL
+	created TIMESTAMP NOT NULL,
+  avatar VARCHAR(255) DEFAULT 'default_img.jpeg'
 	);
 
 

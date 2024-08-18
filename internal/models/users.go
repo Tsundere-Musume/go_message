@@ -15,6 +15,7 @@ type User struct {
 	Name           string
 	Email          string
 	HashedPassword string
+	AvatarUrl      string
 	CreatedAt      time.Time
 }
 
@@ -22,16 +23,17 @@ type UserModel struct {
 	DB *sql.DB
 }
 
-func (m *UserModel) Insert(name, email, password string) error {
+func (m *UserModel) Insert(name, email, password, avatar string) error {
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 	if err != nil {
 		return err
 	}
 	stmt := `
-	INSERT INTO users (id, name, email, hashed_password, created) 
-	VALUES ($1, $2, $3, $4, $5);
+	INSERT INTO users (id, name, email,avatar,  hashed_password, created) 
+	VALUES ($1, $2, $3, $4, $5, $6);
 	`
-	_, err = m.DB.Exec(stmt, uuid.New(), name, email, hashedPassword, time.Now().UTC())
+	_, err = m.DB.Exec(stmt, uuid.New(), name, email, avatar, hashedPassword, time.Now().UTC())
 	if err != nil {
 		if strings.Contains(err.Error(), "users_email_key") {
 			return ErrDuplicateEmail
@@ -77,8 +79,8 @@ func (m *UserModel) Exists(id string) (bool, error) {
 
 func (m *UserModel) Get(id string) (*User, error) {
 	var user User
-	stmt := "SELECT name, email, created FROM users WHERE id = $1"
-	err := m.DB.QueryRow(stmt, id).Scan(&user.Name, &user.Email, &user.CreatedAt)
+	stmt := "SELECT name, email, created, avatar FROM users WHERE id = $1"
+	err := m.DB.QueryRow(stmt, id).Scan(&user.Name, &user.Email, &user.CreatedAt, &user.AvatarUrl)
 	if err != nil {
 		if strings.Contains(err.Error(), "no rows in result set") {
 			return nil, ErrNoRecord
@@ -90,7 +92,7 @@ func (m *UserModel) Get(id string) (*User, error) {
 
 func (m *UserModel) GetAllUsers(id string) ([]*User, error) {
 	//TODO: maybe remove the email probably should remove better to remove
-	stmt := "SELECT id, name, email, created FROM users WHERE id != $1"
+	stmt := "SELECT id, name, email, created, avatar FROM users WHERE id != $1"
 	rows, err := m.DB.Query(stmt, id)
 	if err != nil {
 		return nil, err
@@ -101,7 +103,7 @@ func (m *UserModel) GetAllUsers(id string) ([]*User, error) {
 
 	for rows.Next() {
 		user := &User{}
-		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.CreatedAt)
+		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.CreatedAt, &user.AvatarUrl)
 		if err != nil {
 			return nil, err
 		}
@@ -116,7 +118,7 @@ func (m *UserModel) GetAllUsers(id string) ([]*User, error) {
 func (m *UserModel) GetFriends(id string) ([]*User, error) {
 	//TODO: maybe remove the email probably should remove better to remove
 	stmt := `
-    SELECT u.id, u.name
+    SELECT u.id, u.name, u.avatar
     FROM 
         friends f
     JOIN 
@@ -133,7 +135,7 @@ func (m *UserModel) GetFriends(id string) ([]*User, error) {
 
 	for rows.Next() {
 		user := &User{}
-		err := rows.Scan(&user.ID, &user.Name)
+		err := rows.Scan(&user.ID, &user.Name, &user.AvatarUrl)
 		if err != nil {
 			return nil, err
 		}

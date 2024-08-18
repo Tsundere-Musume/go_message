@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/Tsundere-Musume/message/internal/models"
 	"github.com/go-playground/form/v4"
 	"github.com/google/uuid"
 	"github.com/justinas/nosurf"
@@ -101,7 +102,7 @@ func (app *application) uploadAvatar(r *http.Request) (string, error) {
 
 	file, fileHeaders, err := r.FormFile("avatar")
 	if err != nil {
-		return "", err
+		return "", models.ErrNoAvatarImg
 	}
 
 	defer file.Close()
@@ -118,10 +119,5 @@ func (app *application) uploadAvatar(r *http.Request) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return fileExt, nil
-}
-
-func generateFileName(filename string) string {
-	ext := filepath.Ext(filename)
-	return uuid.NewString() + ext
+	return filename, nil
 }

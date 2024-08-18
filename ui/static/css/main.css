@@ -791,6 +791,11 @@ h1 {
   background-color: rgb(235 111 146 / var(--tw-bg-opacity));
 }
 
+.object-cover {
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
 .p-2 {
   padding: 0.5rem;
 }
